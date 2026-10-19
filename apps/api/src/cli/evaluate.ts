@@ -1,3 +1,4 @@
+import { existsSync } from "fs";
 import { readFile } from "fs/promises";
 import { resolve } from "path";
 import { serializeKit } from "../domain/kit/serialize.js";
@@ -45,7 +46,11 @@ function resolveLlmClient(): LlmClient {
 
 export async function runEvaluate(rawArgs: string[] = process.argv.slice(2)): Promise<void> {
   const args = parseCliArgs(rawArgs);
-  const inputAbs = resolve(process.cwd(), args.inputPath);
+  let inputAbs = resolve(process.cwd(), args.inputPath);
+  if (!existsSync(inputAbs)) {
+    const fallback = resolve(process.cwd(), args.inputPath.replace(/^apps\/api\//, ""));
+    if (existsSync(fallback)) inputAbs = fallback;
+  }
   const outputAbs = resolve(process.cwd(), args.outputPath);
 
   const fileData = await readFile(inputAbs, "utf-8");

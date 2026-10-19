@@ -1,0 +1,89 @@
+@import "tailwindcss";
+
+@theme {
+  --color-paper: #F5F2EC;
+  --color-paper-card: #FFFFFF;
+  --color-paper-subtle: #ECE8E0;
+  --color-ink: #171512;
+  --color-ink-muted: #736B63;
+  --color-ink-faint: #A8A199;
+  --color-border: #E3DED4;
+  --color-border-dark: #C9C2B5;
+  --color-terracotta: #B8502F;
+  --color-terracotta-hover: #9C4327;
+  --color-terracotta-subtle: #F6EDE8;
+
+  --color-dark-paper: #151311;
+  --color-dark-card: #1D1A17;
+  --color-dark-subtle: #24201C;
+  --color-dark-ink: #EBE7DF;
+  --color-dark-muted: #A8A199;
+  --color-dark-border: #2B2724;
+  --color-dark-terracotta: #D46B4A;
+
+  --font-serif: var(--font-instrument-serif), Georgia, serif;
+  --font-sans: var(--font-dm-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), Menlo, Monaco, Consolas, monospace;
+}
+
+:root {
+  --bg: #F5F2EC;
+  --card-bg: #FFFFFF;
+  --subtle-bg: #ECE8E0;
+  --text: #171512;
+  --text-muted: #736B63;
+  --text-faint: #A8A199;
+  --border: #E3DED4;
+  --border-dark: #C9C2B5;
+  --accent: #B8502F;
+  --accent-hover: #9C4327;
+  --accent-subtle: #F6EDE8;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #151311;
+    --card-bg: #1D1A17;
+    --subtle-bg: #24201C;
+    --text: #EBE7DF;
+    --text-muted: #A8A199;
+    --text-faint: #736B63;
+    --border: #2B2724;
+    --border-dark: #3F3934;
+    --accent: #D46B4A;
+    --accent-hover: #E07D5E;
+    --accent-subtle: #2A1D18;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

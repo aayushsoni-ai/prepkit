@@ -1,7 +1,8 @@
 import { searchBrave } from "./brave.js";
-import { DiscussionThread, searchHackerNews } from "./hackerNews.js";
+import { searchHackerNews } from "./hackerNews.js";
+import type { DiscussionThread } from "./hackerNews.js";
 
-export { DiscussionThread } from "./hackerNews.js";
+export type { DiscussionThread };
 
 export interface DiscussionSearchOptions {
   provider: "hackernews" | "brave";
