@@ -1,0 +1,32 @@
+[
+  {
+    "id": "case-acme-senior",
+    "company_url": "http://127.0.0.1:8099/sites/acme/index.html",
+    "days": 5,
+    "jd": "We are seeking a Senior Distributed Systems Engineer. Must have 5+ years of experience in Node.js and TypeScript. Deep expertise in distributed state machines and consensus is required. Mentoring junior developers is essential. Knowledge of Rust is a plus."
+  },
+  {
+    "id": "case-acme-shared-research",
+    "company_url": "http://127.0.0.1:8099/sites/acme/index.html",
+    "days": 3,
+    "jd": "We are seeking a Senior Distributed Systems Engineer. Must have 5+ years of experience in Node.js and TypeScript. Deep expertise in distributed state machines and consensus is required. Mentoring junior developers is essential. Knowledge of Rust is a plus."
+  },
+  {
+    "id": "case-harbor-logistics",
+    "company_url": "http://127.0.0.1:8099/sites/harbor/index.html",
+    "days": 4,
+    "jd": "Harbor is hiring a Logistics Integration Engineer. Must have experience building API integrations and PostgreSQL pipelines. Experience with shipping domain is preferred."
+  },
+  {
+    "id": "case-blank-thin",
+    "company_url": "http://127.0.0.1:8099/sites/blank/index.html",
+    "days": 2,
+    "jd": "Software Engineer needed. TypeScript experience required."
+  },
+  {
+    "id": "case-unreachable-site",
+    "company_url": "http://127.0.0.1:8099/sites/nonexistent-company-domain/index.html",
+    "days": 3,
+    "jd": "Full Stack Engineer needed. React and Node.js proficiency is mandatory. Experience with Docker is a plus."
+  }
+]
