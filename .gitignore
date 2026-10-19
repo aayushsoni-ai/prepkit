@@ -1,0 +1,12 @@
+node_modules/
+.env
+.env.local
+.env.*.local
+dist/
+.next/
+out/
+coverage/
+.turbo/
+*.tsbuildinfo
+.DS_Store
+kits.json

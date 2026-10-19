@@ -1,0 +1,16 @@
+{
+  "name": "prepkit",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/api",
+    "apps/web"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspaces --if-present",
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "fixtures": "npm run fixtures --workspace=api",
+    "evaluate": "npm run evaluate --workspace=api --"
+  }
+}
