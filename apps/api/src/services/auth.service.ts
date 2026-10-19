@@ -46,13 +46,45 @@ export class AuthService {
 
   async login(email: string, password: string): Promise<{ user: { id: string; email: string }; rawToken: string }> {
     const user = await this.usersRepo.findByEmail(email);
-    if (!user) {
+    if (!user || !user.password_hash) {
       throw new UnauthorizedError("Invalid email or password");
     }
 
     const isValid = await bcrypt.compare(password, user.password_hash);
     if (!isValid) {
       throw new UnauthorizedError("Invalid email or password");
+    }
+
+    const rawToken = randomBytes(32).toString("hex");
+    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+
+    await this.sessionsRepo.create({
+      id: createId("sess"),
+      token_hash: hashToken(rawToken),
+      user_id: user.id,
+      expires_at: expiresAt,
+      created_at: new Date().toISOString()
+    });
+
+    return { user: { id: user.id, email: user.email }, rawToken };
+  }
+
+  async handleGoogleAuth(googleId: string, email: string): Promise<{ user: { id: string; email: string }; rawToken: string }> {
+    const norm = email.toLowerCase().trim();
+    let user = await this.usersRepo.findByGoogleId(googleId);
+
+    if (!user) {
+      user = await this.usersRepo.findByEmail(norm);
+      if (user) {
+        await this.usersRepo.updateGoogleId(user.id, googleId);
+      } else {
+        user = await this.usersRepo.create({
+          id: createId("usr"),
+          email: norm,
+          google_id: googleId,
+          created_at: new Date().toISOString()
+        });
+      }
     }
 
     const rawToken = randomBytes(32).toString("hex");

@@ -36,4 +36,29 @@ export class UsersRepository {
       return user;
     }
   }
+
+  async findByGoogleId(googleId: string): Promise<UserModel | null> {
+    try {
+      const db = getDb();
+      return await db.collection<UserModel>("users").findOne({ google_id: googleId });
+    } catch {
+      for (const u of memoryUsers.values()) {
+        if (u.google_id === googleId) return u;
+      }
+      return null;
+    }
+  }
+
+  async updateGoogleId(id: string, googleId: string): Promise<void> {
+    try {
+      const db = getDb();
+      await db.collection<UserModel>("users").updateOne({ id }, { $set: { google_id: googleId } });
+    } catch {
+      const u = memoryUsers.get(id);
+      if (u) {
+        u.google_id = googleId;
+        memoryUsers.set(id, u);
+      }
+    }
+  }
 }

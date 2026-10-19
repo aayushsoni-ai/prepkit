@@ -22,6 +22,8 @@ const envSchema = z.object({
   MONGODB_URI: z.string().default("mongodb://localhost:27017/prepkit"),
   SESSION_SECRET: z.string().min(16).default("fallback-secret-for-development-must-be-long-enough"),
   SESSION_TTL_DAYS: z.coerce.number().default(7),
+  GOOGLE_CLIENT_ID: z.string().default(""),
+  GOOGLE_CLIENT_SECRET: z.string().default(""),
   LLM_PROVIDER: z.enum(["gemini", "groq", "mock"]).default("gemini"),
   GEMINI_API_KEY: z.string().default(""),
   GEMINI_MODEL_HEAVY: z.string().default("gemini-2.5-pro"),
