@@ -12,9 +12,17 @@ export function createApp(): Express {
   const app = express();
   const env = getEnv();
 
+  app.set("trust proxy", 1);
+
   app.use(
     cors({
-      origin: env.WEB_ORIGIN,
+      origin: (requestOrigin, callback) => {
+        if (!requestOrigin) return callback(null, true);
+        if (requestOrigin === env.WEB_ORIGIN) return callback(null, true);
+        if (requestOrigin.includes("localhost") || requestOrigin.includes("127.0.0.1")) return callback(null, true);
+        if (requestOrigin.endsWith(".onrender.com")) return callback(null, true);
+        return callback(null, false);
+      },
       credentials: true
     })
   );

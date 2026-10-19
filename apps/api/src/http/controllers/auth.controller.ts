@@ -5,13 +5,13 @@ import { AuthService } from "../../services/auth.service.js";
 const authService = new AuthService();
 
 export const registerSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(8, "Password must be at least 8 characters")
+  email: z.string().email().max(255),
+  password: z.string().min(8, "Password must be at least 8 characters").max(128)
 });
 
 export const loginSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(1)
+  email: z.string().email().max(255),
+  password: z.string().min(1).max(128)
 });
 
 function setSessionCookie(res: Response, token: string): void {
@@ -38,7 +38,10 @@ export async function handleLogin(req: Request, res: Response): Promise<void> {
 }
 
 export async function handleLogout(req: Request, res: Response): Promise<void> {
-  const token = req.cookies?.prepkit_session;
+  const cookieToken = req.cookies?.prepkit_session;
+  const authHeader = req.headers.authorization;
+  const bearerToken = authHeader?.startsWith("Bearer ") ? authHeader.slice(7) : undefined;
+  const token = cookieToken || bearerToken;
   if (token) {
     await authService.logout(token);
   }

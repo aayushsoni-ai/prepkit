@@ -7,9 +7,10 @@ import { AuthService } from "../../services/auth.service.js";
 const authService = new AuthService();
 
 function getRedirectUri(req: Request): string {
+  const forwardedHost = req.headers["x-forwarded-host"];
+  const host = typeof forwardedHost === "string" ? forwardedHost.split(",")[0].trim() : req.get("host") || "localhost:3000";
   const forwardedProto = req.headers["x-forwarded-proto"];
   const proto = typeof forwardedProto === "string" ? forwardedProto.split(",")[0].trim() : req.protocol;
-  const host = req.get("host") || "localhost:3000";
   return `${proto}://${host}/api/auth/google/callback`;
 }
 
@@ -43,10 +44,15 @@ export async function handleGoogleRedirect(req: Request, res: Response): Promise
 
 export async function handleGoogleCallback(req: Request, res: Response): Promise<void> {
   const env = getEnv();
-  const { code, state } = req.query;
+  const { code, state, error: queryError } = req.query;
   const storedState = req.cookies?.oauth_state;
 
   res.clearCookie("oauth_state");
+
+  if (queryError) {
+    res.redirect("/login?error=Google+login+was+cancelled");
+    return;
+  }
 
   if (!code || !state || typeof code !== "string" || state !== storedState) {
     res.redirect("/login?error=Invalid+state+or+authorization+code");
