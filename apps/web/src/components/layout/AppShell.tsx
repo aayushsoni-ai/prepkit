@@ -14,7 +14,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <header className="border-b border-[var(--border)] bg-[var(--bg)]/90 sticky top-0 z-30 backdrop-blur-none">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center space-x-8">
-            <Link href="/" className="font-serif text-2xl tracking-tight text-[var(--text)] hover:text-[var(--accent)] transition-colors">
+            <Link href={user ? "/kits" : "/"} className="font-serif text-2xl tracking-tight text-[var(--text)] hover:text-[var(--accent)] transition-colors">
               prepkit<span className="text-[var(--accent)]">.</span>
             </Link>
             <nav className="hidden sm:flex space-x-6 text-sm font-medium">

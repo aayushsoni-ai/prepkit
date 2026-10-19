@@ -1,26 +1,69 @@
+"use client";
+
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { api } from "@/lib/api/client";
 
 export default function HomePage() {
+  const [user, setUser] = useState<{ id: string; email: string } | null>(null);
+
+  useEffect(() => {
+    api.auth
+      .me()
+      .then((res) => setUser(res.user))
+      .catch(() => setUser(null));
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await api.auth.logout();
+    } finally {
+      setUser(null);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[var(--bg)] text-[var(--text)] flex flex-col">
       <header className="border-b border-[var(--border)] bg-[var(--bg)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <Link href="/" className="font-serif text-2xl tracking-tight text-[var(--text)]">
+          <Link href={user ? "/kits" : "/"} className="font-serif text-2xl tracking-tight text-[var(--text)] hover:text-[var(--accent)] transition-colors">
             prepkit<span className="text-[var(--accent)]">.</span>
           </Link>
           <div className="flex items-center space-x-4">
-            <Link
-              href="/login"
-              className="text-sm font-medium text-[var(--text-muted)] hover:text-[var(--text)]"
-            >
-              Sign in
-            </Link>
-            <Link
-              href="/register"
-              className="text-sm font-medium px-4 py-2 rounded-md bg-[var(--accent)] text-white hover:bg-[var(--accent-hover)] transition-colors"
-            >
-              Get started
-            </Link>
+            {user ? (
+              <div className="flex items-center space-x-4">
+                <Link
+                  href="/kits"
+                  className="text-sm font-medium text-[var(--text)] hover:text-[var(--accent)] transition-colors"
+                >
+                  My Kits
+                </Link>
+                <span className="text-xs text-[var(--text-muted)] font-mono hidden sm:inline">
+                  {user.email}
+                </span>
+                <button
+                  onClick={handleLogout}
+                  className="text-xs font-medium text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors cursor-pointer"
+                >
+                  Sign out
+                </button>
+              </div>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  className="text-sm font-medium text-[var(--text-muted)] hover:text-[var(--text)]"
+                >
+                  Sign in
+                </Link>
+                <Link
+                  href="/register"
+                  className="text-sm font-medium px-4 py-2 rounded-md bg-[var(--accent)] text-white hover:bg-[var(--accent-hover)] transition-colors"
+                >
+                  Get started
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </header>
@@ -41,16 +84,16 @@ export default function HomePage() {
 
         <div className="flex flex-col sm:flex-row gap-4 items-center">
           <Link
-            href="/kits/new"
+            href={user ? "/kits/new" : "/register"}
             className="w-full sm:w-auto px-8 py-3.5 rounded-md bg-[var(--accent)] text-white font-medium hover:bg-[var(--accent-hover)] transition-all shadow-sm text-sm"
           >
-            Create your first kit
+            {user ? "Create New Kit" : "Create your first kit"}
           </Link>
           <Link
-            href="/login"
+            href={user ? "/kits" : "/login"}
             className="w-full sm:w-auto px-8 py-3.5 rounded-md border border-[var(--border-dark)] bg-[var(--card-bg)] text-[var(--text)] font-medium hover:bg-[var(--subtle-bg)] transition-all text-sm"
           >
-            View dashboard
+            {user ? "Open My Kits" : "Sign in to Dashboard"}
           </Link>
         </div>
 
