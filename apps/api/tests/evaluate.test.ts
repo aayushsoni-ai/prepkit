@@ -102,7 +102,7 @@ describe("batch evaluate runner", () => {
 
     const writtenJson = JSON.parse(await readFile(testOutFile, "utf-8"));
 
-    expect(writtenJson.version).toBe(1);
+    expect(String(writtenJson.version)).toBe("1.0");
     expect(writtenJson.kits.length).toBe(3);
 
     expect(writtenJson.kits[0].id).toBe("case-success-1");

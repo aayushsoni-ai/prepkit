@@ -9,7 +9,7 @@ export interface BatchCaseResult {
 }
 
 export interface BatchReport {
-  version: number;
+  version: string;
   generated_at: string;
   kits: BatchCaseResult[];
 }
@@ -25,7 +25,7 @@ export class BatchReportWriter {
   async recordResult(result: BatchCaseResult): Promise<void> {
     this.results.push(result);
     const report: BatchReport = {
-      version: 1,
+      version: "1.0",
       generated_at: new Date().toISOString(),
       kits: [...this.results]
     };
