@@ -68,7 +68,7 @@ export default function KitDetailPage({ params }: { params: Promise<{ id: string
   const tabs = [
     { id: "questions", label: "Question Board", badge: kit.questions?.length },
     { id: "brief", label: "Company & Role Brief" },
-    { id: "schedule", label: "Schedule", badge: `${kit.schedule?.days || 0}d` },
+    { id: "schedule", label: "Schedule", badge: `${Array.isArray(kit.schedule?.days) ? kit.schedule.days.length : (kit.days_available || 0)}d` },
     { id: "practice", label: "Flashcards", badge: kit.flashcards?.length },
     { id: "weakspots", label: "Weak Spots" }
   ];

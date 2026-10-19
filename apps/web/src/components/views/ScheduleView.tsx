@@ -6,8 +6,13 @@ import { Button } from "@/components/ui/Button";
 import { Popover } from "@/components/ui/Popover";
 
 export function ScheduleView() {
-  const { kit, regenerate, undo } = useKit();
-  const schedule = kit.schedule || { days: 0, plan: [] };
+  const { kit, regenerate } = useKit();
+  const scheduleDays = Array.isArray(kit.schedule?.days)
+    ? kit.schedule.days
+    : Array.isArray((kit.schedule as any)?.plan)
+    ? (kit.schedule as any).plan
+    : [];
+  const totalDays = kit.days_available || scheduleDays.length;
   const questions = kit.questions || [];
 
   return (
@@ -15,7 +20,7 @@ export function ScheduleView() {
       <div className="flex items-center justify-between pb-4 border-b border-[var(--border)]">
         <div>
           <h2 className="font-serif text-2xl font-normal text-[var(--text)]">
-            {schedule.days}-Day Study Roadmap
+            {totalDays}-Day Study Roadmap
           </h2>
           <p className="text-xs text-[var(--text-muted)] mt-1">
             Structured daily allocation based on requirement priorities and category weights.
@@ -56,7 +61,7 @@ export function ScheduleView() {
       </div>
 
       <div className="space-y-4">
-        {(schedule.plan || []).map((day: any) => {
+        {scheduleDays.map((day: any) => {
           const dayQuestions = (day.question_ids || [])
             .map((qid: string) => questions.find((q: any) => q.id === qid))
             .filter(Boolean);

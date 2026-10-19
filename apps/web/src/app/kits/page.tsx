@@ -12,7 +12,8 @@ import { Skeleton } from "@/components/ui/Skeleton";
 interface KitSummary {
   id: string;
   brief: { company: string; role: string };
-  schedule: { days: number };
+  schedule?: { days: any };
+  days_available?: number;
   questions: unknown[];
   flashcards: unknown[];
 }
@@ -77,7 +78,7 @@ export default function KitsPage() {
                       {kit.brief?.company || "Company"}
                     </span>
                     <span className="text-xs font-mono text-[var(--text-muted)]">
-                      {kit.schedule?.days || 0}d prep
+                      {Array.isArray(kit.schedule?.days) ? kit.schedule.days.length : (kit.days_available || 0)}d prep
                     </span>
                   </div>
                   <h2 className="font-serif text-xl font-normal text-[var(--text)] group-hover:text-[var(--accent)] transition-colors mb-2">
