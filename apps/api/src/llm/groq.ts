@@ -20,8 +20,8 @@ export class GroqLlmClient implements LlmClient {
 
   constructor(options: GroqClientOptions) {
     this.apiKey = options.apiKey;
-    this.heavyModel = options.heavyModel ?? "llama-3.3-70b-versatile";
-    this.lightModel = options.lightModel ?? "llama-3.1-8b-instant";
+    this.heavyModel = options.heavyModel ?? "openai/gpt-oss-120b";
+    this.lightModel = options.lightModel ?? "openai/gpt-oss-20b";
     this.limiter = options.limiter;
   }
 

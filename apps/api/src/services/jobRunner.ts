@@ -15,7 +15,12 @@ function getPipelineLlm(): LlmClient {
   const limiter = new TokenBucketLimiter({ rpm: env.LLM_RPM_BUDGET, tpm: env.LLM_TPM_BUDGET });
 
   if (env.LLM_PROVIDER === "groq" && env.GROQ_API_KEY) {
-    const groq = new GroqLlmClient({ apiKey: env.GROQ_API_KEY, limiter });
+    const groq = new GroqLlmClient({
+      apiKey: env.GROQ_API_KEY,
+      heavyModel: env.GROQ_MODEL_HEAVY,
+      lightModel: env.GROQ_MODEL_LIGHT,
+      limiter
+    });
     if (env.GEMINI_API_KEY) {
       return new FallbackLlmClient(groq, new GeminiLlmClient({ apiKey: env.GEMINI_API_KEY, limiter }));
     }
@@ -25,12 +30,25 @@ function getPipelineLlm(): LlmClient {
   if (env.GEMINI_API_KEY) {
     const gemini = new GeminiLlmClient({ apiKey: env.GEMINI_API_KEY, limiter });
     if (env.GROQ_API_KEY) {
-      return new FallbackLlmClient(gemini, new GroqLlmClient({ apiKey: env.GROQ_API_KEY, limiter }));
+      return new FallbackLlmClient(
+        gemini,
+        new GroqLlmClient({
+          apiKey: env.GROQ_API_KEY,
+          heavyModel: env.GROQ_MODEL_HEAVY,
+          lightModel: env.GROQ_MODEL_LIGHT,
+          limiter
+        })
+      );
     }
     return gemini;
   }
 
-  return new GroqLlmClient({ apiKey: env.GROQ_API_KEY || "dummy", limiter });
+  return new GroqLlmClient({
+    apiKey: env.GROQ_API_KEY || "dummy",
+    heavyModel: env.GROQ_MODEL_HEAVY,
+    lightModel: env.GROQ_MODEL_LIGHT,
+    limiter
+  });
 }
 
 export class JobRunner {

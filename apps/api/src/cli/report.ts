@@ -1,4 +1,5 @@
-import { writeFile } from "fs/promises";
+import { mkdir, writeFile } from "fs/promises";
+import { dirname } from "path";
 import { SerializedKit } from "../domain/kit/serialize.js";
 
 export interface BatchCaseResult {
@@ -29,6 +30,7 @@ export class BatchReportWriter {
       generated_at: new Date().toISOString(),
       kits: [...this.results]
     };
+    await mkdir(dirname(this.outputPath), { recursive: true });
     await writeFile(this.outputPath, JSON.stringify(report, null, 2), "utf-8");
   }
 

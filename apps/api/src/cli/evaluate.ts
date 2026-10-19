@@ -23,8 +23,15 @@ function resolveLlmClient(): LlmClient {
   const env = getEnv();
   const limiter = new TokenBucketLimiter({ rpm: env.LLM_RPM_BUDGET, tpm: env.LLM_TPM_BUDGET });
 
+  const groqOptions = {
+    apiKey: env.GROQ_API_KEY,
+    heavyModel: env.GROQ_MODEL_HEAVY,
+    lightModel: env.GROQ_MODEL_LIGHT,
+    limiter
+  };
+
   if (env.LLM_PROVIDER === "groq" && env.GROQ_API_KEY) {
-    const groq = new GroqLlmClient({ apiKey: env.GROQ_API_KEY, limiter });
+    const groq = new GroqLlmClient(groqOptions);
     if (env.GEMINI_API_KEY) {
       const gemini = new GeminiLlmClient({ apiKey: env.GEMINI_API_KEY, limiter });
       return new FallbackLlmClient(groq, gemini);
@@ -35,13 +42,18 @@ function resolveLlmClient(): LlmClient {
   if (env.GEMINI_API_KEY) {
     const gemini = new GeminiLlmClient({ apiKey: env.GEMINI_API_KEY, limiter });
     if (env.GROQ_API_KEY) {
-      const groq = new GroqLlmClient({ apiKey: env.GROQ_API_KEY, limiter });
+      const groq = new GroqLlmClient(groqOptions);
       return new FallbackLlmClient(gemini, groq);
     }
     return gemini;
   }
 
-  return new GroqLlmClient({ apiKey: env.GROQ_API_KEY || "dummy", limiter });
+  return new GroqLlmClient({
+    apiKey: env.GROQ_API_KEY || "dummy",
+    heavyModel: env.GROQ_MODEL_HEAVY,
+    lightModel: env.GROQ_MODEL_LIGHT,
+    limiter
+  });
 }
 
 export async function runEvaluate(rawArgs: string[] = process.argv.slice(2)): Promise<void> {
@@ -51,7 +63,10 @@ export async function runEvaluate(rawArgs: string[] = process.argv.slice(2)): Pr
     const fallback = resolve(process.cwd(), args.inputPath.replace(/^apps\/api\//, ""));
     if (existsSync(fallback)) inputAbs = fallback;
   }
-  const outputAbs = resolve(process.cwd(), args.outputPath);
+  let outputAbs = resolve(process.cwd(), args.outputPath);
+  if (process.cwd().endsWith("apps/api") && args.outputPath.startsWith("apps/api/")) {
+    outputAbs = resolve(process.cwd(), args.outputPath.replace(/^apps\/api\//, ""));
+  }
 
   const fileData = await readFile(inputAbs, "utf-8");
   const cases: RawCase[] = JSON.parse(fileData);

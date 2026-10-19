@@ -28,7 +28,11 @@ export class RegenerationService {
 
     const prompt = buildTechnicalPrompt(catReqs, keptTitles);
     const env = getEnv();
-    const llm = new GroqLlmClient({ apiKey: env.GROQ_API_KEY || "dummy" });
+    const llm = new GroqLlmClient({
+      apiKey: env.GROQ_API_KEY || "dummy",
+      heavyModel: env.GROQ_MODEL_HEAVY,
+      lightModel: env.GROQ_MODEL_LIGHT
+    });
 
     let newQuestions: Question[] = [];
     try {
