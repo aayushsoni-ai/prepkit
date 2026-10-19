@@ -2,6 +2,7 @@
   "name": "prepkit",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "workspaces": [
     "apps/api",
     "apps/web"
