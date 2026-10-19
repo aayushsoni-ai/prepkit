@@ -45,16 +45,21 @@ async function handleRequest(req: IncomingMessage, res: ServerResponse): Promise
 }
 
 export function startFixtureServer(port = 8099): Promise<Server> {
-  return new Promise((resolveServer) => {
+  return new Promise((resolveServer, rejectServer) => {
     const server = createServer(handleRequest);
+    server.on("error", (err) => rejectServer(err));
     server.listen(port, "127.0.0.1", () => {
       resolveServer(server);
     });
   });
 }
 
-export function stopFixtureServer(server: Server): Promise<void> {
+export function stopFixtureServer(server?: Server): Promise<void> {
   return new Promise((resolveStop, rejectStop) => {
+    if (!server) {
+      resolveStop();
+      return;
+    }
     server.close((err) => {
       if (err) rejectStop(err);
       else resolveStop();

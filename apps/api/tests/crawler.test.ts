@@ -5,9 +5,11 @@ import { crawlCompany } from "../src/retrieval/crawler.js";
 
 describe("crawler against fixture sites", () => {
   let server: Server;
+  let serverPort: number;
 
   beforeAll(async () => {
-    server = await startFixtureServer(8099);
+    server = await startFixtureServer(0);
+    serverPort = (server.address() as { port: number }).port;
   });
 
   afterAll(async () => {
@@ -15,7 +17,7 @@ describe("crawler against fixture sites", () => {
   });
 
   it("finds acme hiring page through unpredictable relative link path", async () => {
-    const result = await crawlCompany("http://127.0.0.1:8099/sites/acme/index.html", {
+    const result = await crawlCompany(`http://127.0.0.1:${serverPort}/sites/acme/index.html`, {
       allowPrivate: true,
       maxPages: 6,
       delayMs: 10
@@ -29,7 +31,7 @@ describe("crawler against fixture sites", () => {
   });
 
   it("reports harbor as having about page and no hiring page", async () => {
-    const result = await crawlCompany("http://127.0.0.1:8099/sites/harbor/index.html", {
+    const result = await crawlCompany(`http://127.0.0.1:${serverPort}/sites/harbor/index.html`, {
       allowPrivate: true,
       maxPages: 5,
       delayMs: 10
@@ -40,7 +42,7 @@ describe("crawler against fixture sites", () => {
   });
 
   it("crawls blank fixture without throwing", async () => {
-    const result = await crawlCompany("http://127.0.0.1:8099/sites/blank/index.html", {
+    const result = await crawlCompany(`http://127.0.0.1:${serverPort}/sites/blank/index.html`, {
       allowPrivate: true,
       maxPages: 3,
       delayMs: 10
@@ -51,7 +53,7 @@ describe("crawler against fixture sites", () => {
   });
 
   it("records skipped sources on failed fetches without throwing", async () => {
-    const result = await crawlCompany("http://127.0.0.1:8099/sites/nonexistent-path/index.html", {
+    const result = await crawlCompany(`http://127.0.0.1:${serverPort}/sites/nonexistent-path/index.html`, {
       allowPrivate: true,
       maxPages: 2,
       delayMs: 10
