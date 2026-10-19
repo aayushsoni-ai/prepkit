@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import { createHash, randomBytes } from "crypto";
 import { createId } from "../domain/kit/ids.js";
+import { ConflictError, UnauthorizedError } from "../http/middleware/errors.js";
 import { SessionsRepository } from "../persistence/repositories/sessions.repo.js";
 import { UsersRepository } from "../persistence/repositories/users.repo.js";
 
@@ -15,7 +16,7 @@ export class AuthService {
   async register(email: string, password: string): Promise<{ user: { id: string; email: string }; rawToken: string }> {
     const existing = await this.usersRepo.findByEmail(email);
     if (existing) {
-      throw new Error("Email already registered");
+      throw new ConflictError("Email already registered");
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -46,12 +47,12 @@ export class AuthService {
   async login(email: string, password: string): Promise<{ user: { id: string; email: string }; rawToken: string }> {
     const user = await this.usersRepo.findByEmail(email);
     if (!user) {
-      throw new Error("Invalid credentials");
+      throw new UnauthorizedError("Invalid email or password");
     }
 
     const isValid = await bcrypt.compare(password, user.password_hash);
     if (!isValid) {
-      throw new Error("Invalid credentials");
+      throw new UnauthorizedError("Invalid email or password");
     }
 
     const rawToken = randomBytes(32).toString("hex");
