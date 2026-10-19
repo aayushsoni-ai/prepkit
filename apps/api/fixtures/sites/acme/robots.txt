@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+
+User-agent: PrepkitBot
+Allow: /
+Crawl-delay: 0
